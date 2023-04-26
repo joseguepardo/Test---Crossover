@@ -1,3 +1,4 @@
+using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -5,6 +6,7 @@ namespace JengaGame
 {
     public class CameraInput : MonoBehaviour
     {
+        private GameManager _gameManager;
         [SerializeField, BoxGroup("RayCasting")]
         private Camera camera;
         [SerializeField, BoxGroup("RayCasting")]
@@ -14,6 +16,11 @@ namespace JengaGame
         private float _mouseDownTime;
         private Stack _hoveringStack;
         private Block _hoveringBlock;
+
+        private void Start()
+        {
+            _gameManager = GameManager.Instance;
+        }
 
         private void Update()
         {
@@ -30,13 +37,11 @@ namespace JengaGame
 
         private void EvaluateStackRaycast(Ray ray)
         {
-            if (Physics.Raycast(ray, out var hit, 1000, stackLayerMask))
-            {
-                _hoveringStack = hit.collider.GetComponent<Stack>();
-                return;
-            }
+            _hoveringStack = Physics.Raycast(ray, out var hit, 1000, stackLayerMask)
+                ? hit.collider.GetComponent<Stack>()
+                : null;
 
-            _hoveringStack = null;
+            _gameManager.HoveringStack(_hoveringStack);
         }
 
         private void EvaluateBlockRaycast(Ray ray)

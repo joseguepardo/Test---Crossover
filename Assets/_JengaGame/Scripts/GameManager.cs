@@ -13,7 +13,8 @@ namespace JengaGame
         [SerializeField] private List<Stack> stacks;
 
         public event Action<Stack> OnStackSelected;
-        private Stack _selectedStack;
+        public event Action<Stack> OnStackHovered;
+        private Stack _selectedStack, _hoveredStack;
 
         protected override void Awake()
         {
@@ -45,6 +46,13 @@ namespace JengaGame
         {
             _selectedStack = stack;
             OnStackSelected?.Invoke(stack);
+        }
+
+        public void HoveringStack(Stack stack)
+        {
+            if (_hoveredStack == stack) return;
+            _hoveredStack = stack;
+            OnStackHovered?.Invoke(stack);
         }
     }
 }

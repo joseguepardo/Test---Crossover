@@ -10,7 +10,7 @@ namespace JengaGame
 {
     public class Stack : MonoBehaviour
     {
-        public string StackId;
+        [ReadOnly] public string StackId;
         [SerializeField, BoxGroup("Configuration")]
         private GameObject blockPrefab;
         [SerializeField, BoxGroup("Configuration")]
@@ -21,6 +21,11 @@ namespace JengaGame
         private BoxCollider stackCollider;
         [SerializeField, BoxGroup("References")]
         private TMP_Text gradeText;
+
+        [SerializeField, BoxGroup("Outline")] private Outline outlineCube;
+        [SerializeField, BoxGroup("Outline")] private Color selectedColor, hoveredColor;
+
+        private bool _isSelected;
 
         public void InitializeStack(List<BlockData> blocksData)
         {
@@ -82,21 +87,48 @@ namespace JengaGame
             height += blockSize.y / 2;
             stackCollider.size = new Vector3(blockSize.z, height, blockSize.z);
             stackCollider.center = new Vector3(0, height / 2, 0);
+
+            var outlineCubeT = outlineCube.transform;
+            outlineCubeT.localScale = new Vector3(blockSize.z, height, blockSize.z);
+            outlineCubeT.localPosition = new Vector3(0, height / 2, 0);
+            outlineCubeT.gameObject.SetActive(false);
         }
 
         private void InitializeListeners()
         {
             GameManager.Instance.OnStackSelected += OnStackSelected;
+            GameManager.Instance.OnStackHovered += OnStackHovered;
         }
 
         private void OnStackSelected(Stack stack)
         {
-            stackCollider.enabled = stack.StackId != StackId;
+            _isSelected = stack.StackId == StackId;
+            stackCollider.enabled = !_isSelected;
+            if (_isSelected)
+            {
+                outlineCube.OutlineColor = selectedColor;
+                outlineCube.gameObject.SetActive(true);
+            }
+            else
+            {
+                outlineCube.OutlineColor = hoveredColor;
+            }
+        }
+
+        private void OnStackHovered(Stack stack)
+        {
+            if (_isSelected) return;
+
+            var outlineCubeT = outlineCube.transform;
+            if (stack == null) outlineCubeT.gameObject.SetActive(false);
+            else
+                outlineCubeT.gameObject.SetActive(stack.StackId == StackId);
         }
 
         private void OnDestroy()
         {
             GameManager.Instance.OnStackSelected -= OnStackSelected;
+            GameManager.Instance.OnStackHovered -= OnStackHovered;
         }
     }
 }
