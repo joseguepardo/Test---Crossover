@@ -168,8 +168,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stacks:
-  - {fileID: 1109843816}
   - {fileID: 1662261699}
+  - {fileID: 1109843816}
   - {fileID: 590709937}
 --- !u!1 &330585543
 GameObject:
@@ -414,7 +414,7 @@ PrefabInstance:
     - target: {fileID: 7952073757876402152, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}
       propertyPath: m_Name
-      value: Stack (2)
+      value: Stack_03
       objectReference: {fileID: 0}
     - target: {fileID: 7952073757876402153, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}
@@ -424,7 +424,7 @@ PrefabInstance:
     - target: {fileID: 7952073757876402153, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7952073757876402153, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}
@@ -434,7 +434,7 @@ PrefabInstance:
     - target: {fileID: 7952073757876402153, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 15
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7952073757876402153, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}
@@ -684,17 +684,17 @@ PrefabInstance:
     - target: {fileID: 7952073757876402152, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}
       propertyPath: m_Name
-      value: Stack (1)
+      value: Stack_01
       objectReference: {fileID: 0}
     - target: {fileID: 7952073757876402153, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7952073757876402153, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 7952073757876402153, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}
@@ -704,7 +704,7 @@ PrefabInstance:
     - target: {fileID: 7952073757876402153, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -15
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7952073757876402153, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}
@@ -796,12 +796,12 @@ PrefabInstance:
     - target: {fileID: 7952073757876402152, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}
       propertyPath: m_Name
-      value: Stack
+      value: Stack_02
       objectReference: {fileID: 0}
     - target: {fileID: 7952073757876402153, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7952073757876402153, guid: caa5f6cdece2dd340804a17b2c22a51f,
         type: 3}

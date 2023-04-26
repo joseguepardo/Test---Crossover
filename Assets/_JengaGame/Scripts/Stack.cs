@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using TMPro;
 using UnityEngine;
 
 namespace JengaGame
@@ -14,6 +15,7 @@ namespace JengaGame
         private Vector3 blockSize;
         [SerializeField, BoxGroup("Configuration")]
         private float blockSpacing;
+        [SerializeField] private TMP_Text gradeText;
 
         public void BuildStack(List<BlockData> blocksData)
         {
@@ -48,6 +50,8 @@ namespace JengaGame
 
                 floorBlockId++;
             }
+
+            gradeText.text = blocksData[0].Grade;
         }
 
         private List<BlockData> GetBlocksDataReordered(List<BlockData> blocksData)
