@@ -10,6 +10,7 @@ namespace JengaGame
 {
     public class Stack : MonoBehaviour, IClickableStack
     {
+        public Transform Transform => transform;
         public string StackId { get; private set; }
         [SerializeField, BoxGroup("Configuration")]
         private GameObject blockPrefab;

@@ -12,11 +12,13 @@ namespace JengaGame
 
         [SerializeField] private List<Stack> stacks;
 
-        public event Action<Stack> OnStackSelected;
-        public event Action<Block> OnBlockSelected;
+        public event Action<IClickableStack> OnStackSelected;
+        public event Action<IClickableBlock> OnBlockSelected;
+        public event Action<IClickableBlock> OnBlockHovered;
 
-        private Stack _selectedStack;
-        private Block _selectedBlock;
+        private IClickableStack _selectedStack;
+        private IClickableBlock _selectedBlock;
+        private IClickableBlock _hoveredBlock;
 
         protected override void Awake()
         {
@@ -42,16 +44,23 @@ namespace JengaGame
             }
         }
 
-        public void SelectStack(Stack stack)
+        public void SelectStack(IClickableStack stack)
         {
             _selectedStack = stack;
             OnStackSelected?.Invoke(stack);
         }
 
-        public void SelectBlock(Block block)
+        public void SelectBlock(IClickableBlock block)
         {
             _selectedBlock = block;
             OnBlockSelected?.Invoke(block);
+        }
+        
+        public void HoverBlock(IClickableBlock block)
+        {
+            if(_hoveredBlock == block) return;
+            _hoveredBlock = block;
+            OnBlockHovered?.Invoke(block);
         }
     }
 }

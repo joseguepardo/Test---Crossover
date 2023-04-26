@@ -1,7 +1,10 @@
+using UnityEngine;
+
 namespace JengaGame
 {
     public interface IClickable
     {
+        Transform Transform { get; }
         void OnClick(bool isClicked);
         void OnHover(bool isHovered);
     }
@@ -15,5 +18,7 @@ namespace JengaGame
     {
         string StackId { get; }
         int BlockId { get; }
+        Block.BlockType BlockTypeValue { get; }
+        BlockData BlockData { get; }
     }
 }

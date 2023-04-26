@@ -8,9 +8,10 @@ namespace JengaGame
 {
     public class Block : MonoBehaviour, IClickableBlock
     {
+        public Transform Transform => transform;
         public string StackId { get; private set; }
         public int BlockId { get; private set; }
-        [ShowInInspector, ReadOnly] public BlockData BlockData;
+        [ShowInInspector, ReadOnly] public BlockData BlockData { get; private set; }
 
         [SerializeField] private Collider blockCollider;
         [SerializeField, BoxGroup("Outline")] private Outline outline;
@@ -25,7 +26,7 @@ namespace JengaGame
             Stone = 2
         }
 
-        [ReadOnly] public BlockType BlockTypeValue;
+        [ReadOnly] public BlockType BlockTypeValue { get; private set; }
 
         public void Initialize(string stackId, int blockId, BlockData blockData)
         {
@@ -55,6 +56,7 @@ namespace JengaGame
             if (_isSelected) return;
 
             outline.enabled = isHovered;
+            GameManager.Instance.HoverBlock(isHovered ? this : null);
         }
     }
 }
