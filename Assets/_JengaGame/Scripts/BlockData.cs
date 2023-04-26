@@ -2,7 +2,7 @@ using Sirenix.OdinInspector;
 
 namespace JengaGame
 {
-    public class StackData
+    public class BlockData
     {
         [ShowInInspector]public string Id { get; private set; }
         [ShowInInspector]public string Subject { get; private set; }
@@ -14,7 +14,7 @@ namespace JengaGame
         [ShowInInspector]public string StandardId { get; private set; }
         [ShowInInspector]public string StandardDescription { get; private set; }
 
-        public StackData(string id, string subject, string grade, int mastery, string domainId, string domain,
+        public BlockData(string id, string subject, string grade, int mastery, string domainId, string domain,
             string cluster,
             string standardId, string standardDescription)
         {
