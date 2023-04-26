@@ -14,8 +14,11 @@ namespace JengaGame
         [SerializeField, BoxGroup("RayCasting")]
         private float clickThreshold = 0.2f;
         private float _mouseDownTime;
-        private Stack _hoveringStack;
-        private Block _hoveringBlock;
+
+        private IClickableStack _lastHoveredStack;
+        private IClickableStack _lastSelectedStack;
+        private IClickableBlock _lastHoveredBlock;
+        private IClickableBlock _lastSelectedBlock;
 
         private void Start()
         {
@@ -37,22 +40,48 @@ namespace JengaGame
 
         private void EvaluateStackRaycast(Ray ray)
         {
-            _hoveringStack = Physics.Raycast(ray, out var hit, 1000, stackLayerMask)
-                ? hit.collider.GetComponent<Stack>()
-                : null;
+            if (Physics.Raycast(ray, out var hit, 1000, stackLayerMask))
+            {
+                if (hit.collider.TryGetComponent<IClickableStack>(out var stack))
+                {
+                    if (stack == _lastHoveredStack) return;
 
-            _gameManager.HoveringStack(_hoveringStack);
+                    _lastHoveredStack?.OnHover(false);
+                    _lastHoveredStack = stack;
+                    _lastHoveredStack.OnHover(true);
+                }
+                else Deselect();
+            }
+            else Deselect();
+
+            void Deselect()
+            {
+                _lastHoveredStack?.OnHover(false);
+                _lastHoveredStack = null;
+            }
         }
 
         private void EvaluateBlockRaycast(Ray ray)
         {
             if (Physics.Raycast(ray, out var hit, 1000, blockLayerMask))
             {
-                _hoveringBlock = hit.collider.GetComponent<Block>();
-                return;
-            }
+                if (hit.collider.TryGetComponent<IClickableBlock>(out var block))
+                {
+                    if (block == _lastHoveredBlock) return;
 
-            _hoveringBlock = null;
+                    _lastHoveredBlock?.OnHover(false);
+                    _lastHoveredBlock = block;
+                    _lastHoveredBlock.OnHover(true);
+                }
+                else Deselect();
+            }
+            else Deselect();
+
+            void Deselect()
+            {
+                _lastHoveredBlock?.OnHover(false);
+                _lastHoveredBlock = null;
+            }
         }
 
         private void EvaluateSingleClick()
@@ -74,10 +103,36 @@ namespace JengaGame
 
         private void OnSingleClick()
         {
-            if (_hoveringStack != null)
-                GameManager.Instance.SelectStack(_hoveringStack);
-            // else if(_hoveringBlock != null)
-            //     GameManager.Instance.SelectBlock(_hoveringBlock
+            void SelectStack()
+            {
+                _lastSelectedBlock?.OnClick(false);
+                _lastSelectedStack?.OnClick(false);
+                _lastSelectedStack = _lastHoveredStack;
+                _lastSelectedStack?.OnClick(true);
+            }
+
+            void SelectBlock()
+            {
+                _lastSelectedBlock?.OnClick(false);
+                _lastSelectedBlock = _lastHoveredBlock;
+                _lastSelectedBlock?.OnClick(true);
+            }
+
+            if (_lastSelectedStack != null)
+            {
+                if (_lastHoveredStack != null && _lastHoveredStack != _lastSelectedStack)
+                {
+                    SelectStack();
+                }
+                else
+                {
+                    if (_lastHoveredBlock != null)
+                    {
+                        SelectBlock();
+                    }
+                }
+            }
+            else SelectStack();
         }
     }
 }
