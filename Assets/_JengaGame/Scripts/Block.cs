@@ -45,7 +45,6 @@ namespace JengaGame
         public void OnClick(bool isClicked)
         {
             _isSelected = isClicked;
-            blockCollider.enabled = !_isSelected;
             outline.enabled = _isSelected;
             outline.OutlineColor = _isSelected ? selectedColor : hoveredColor;
             if (_isSelected) GameManager.Instance.SelectBlock(this);
