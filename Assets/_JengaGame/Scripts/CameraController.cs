@@ -1,19 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace JengaGame
 {
-    public class CameraControls : MonoBehaviour
+    public class CameraController : MonoBehaviour
     {
-        [SerializeField] private Transform target;
-        [SerializeField] private float distance = 10.0f;
-        [SerializeField] private float xSpeed = 120.0f;
-        [SerializeField] private float ySpeed = 120.0f;
-        [SerializeField] private float scrollStepSize = 5f;
-        [SerializeField, Range(0, 1)] private float lerpFactor = 0.1f;
-
+        [SerializeField, BoxGroup("Config")] private Transform target;
+        [SerializeField, BoxGroup("Config")] private float distance = 10.0f;
+        [SerializeField, BoxGroup("Config")] private float xSpeed = 120.0f;
+        [SerializeField, BoxGroup("Config")] private float ySpeed = 120.0f;
+        [SerializeField, BoxGroup("Config")] private float scrollStepSize = 5f;
+        [SerializeField, BoxGroup("Config"), Range(0, 1)]
+        private float lerpFactor = 0.1f;
         private float _x, _y;
         private float _xInput, _yInput;
         private float _scrollInput;
@@ -22,6 +23,7 @@ namespace JengaGame
         private void Start()
         {
             InitializeVariables();
+            InitializeListeners();
         }
 
         private void InitializeVariables()
@@ -36,12 +38,22 @@ namespace JengaGame
             _y = angles.x;
         }
 
-        private void Update()
+        private void InitializeListeners()
         {
-            UpdateCamera();
+            GameManager.Instance.OnStackSelected += OnStackSelected;
         }
 
-        private void UpdateCamera()
+        private void OnStackSelected(Stack stack)
+        {
+            target = stack.transform;
+        }
+
+        private void Update()
+        {
+            UpdateCameraValues();
+        }
+
+        private void UpdateCameraValues()
         {
             var cameraT = transform;
             if (Input.GetMouseButton(0))
@@ -73,9 +85,9 @@ namespace JengaGame
             _cameraT.position = Vector3.Lerp(_cameraT.position, _cameraFollowT.position, lerpFactor);
         }
 
-        private void ChangeTarget(Transform newTarget)
+        private void OnDestroy()
         {
-            target = newTarget;
+            GameManager.Instance.OnStackSelected -= OnStackSelected;
         }
     }
 }

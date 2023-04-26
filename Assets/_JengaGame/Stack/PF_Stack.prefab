@@ -280,7 +280,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7952073757876402153}
   - component: {fileID: 1134975043768507562}
-  m_Layer: 0
+  - component: {fileID: 656387171331229410}
+  m_Layer: 6
   m_Name: PF_Stack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -320,4 +321,18 @@ MonoBehaviour:
     type: 3}
   blockSize: {x: 2.5, y: 1.5, z: 8.5}
   blockSpacing: 0.5
+  stackCollider: {fileID: 656387171331229410}
   gradeText: {fileID: 7047972962050317439}
+--- !u!65 &656387171331229410
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7952073757876402152}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
