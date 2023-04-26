@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
@@ -10,6 +11,10 @@ namespace JengaGame
         [ShowInInspector, ReadOnly] private Dictionary<string, List<BlockData>> _blocksData;
 
         [SerializeField] private List<Stack> stacks;
+
+        public event Action<Stack> OnStackSelected;
+        public event Action<Stack> OnStackHovered;
+        private Stack _selectedStack, _hoveredStack;
 
         protected override void Awake()
         {
@@ -30,9 +35,24 @@ namespace JengaGame
             {
                 if (stackId >= stacks.Count) break;
 
-                stacks[stackId].BuildStack(_blocksData[blockDataKey]);
+                stacks[stackId].InitializeStack(_blocksData[blockDataKey]);
                 stackId++;
             }
+
+            SelectStack(stacks[1]);
+        }
+
+        public void SelectStack(Stack stack)
+        {
+            _selectedStack = stack;
+            OnStackSelected?.Invoke(stack);
+        }
+
+        public void HoveringStack(Stack stack)
+        {
+            if (_hoveredStack == stack) return;
+            _hoveredStack = stack;
+            OnStackHovered?.Invoke(stack);
         }
     }
 }

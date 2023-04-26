@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +10,30 @@ namespace JengaGame
 {
     public class Stack : MonoBehaviour
     {
+        [ReadOnly] public string StackId;
         [SerializeField, BoxGroup("Configuration")]
         private GameObject blockPrefab;
         [SerializeField, BoxGroup("Configuration")]
         private Vector3 blockSize;
         [SerializeField, BoxGroup("Configuration")]
         private float blockSpacing;
-        [SerializeField] private TMP_Text gradeText;
+        [SerializeField, BoxGroup("References")]
+        private BoxCollider stackCollider;
+        [SerializeField, BoxGroup("References")]
+        private TMP_Text gradeText;
 
-        public void BuildStack(List<BlockData> blocksData)
+        [SerializeField, BoxGroup("Outline")] private Outline outlineCube;
+        [SerializeField, BoxGroup("Outline")] private Color selectedColor, hoveredColor;
+
+        private bool _isSelected;
+
+        public void InitializeStack(List<BlockData> blocksData)
+        {
+            BuildStack(blocksData);
+            InitializeListeners();
+        }
+
+        private void BuildStack(List<BlockData> blocksData)
         {
             var numberOfStacks = blocksData.Count;
             var reorderedBlocksData = GetBlocksDataReordered(blocksData);
@@ -51,7 +67,10 @@ namespace JengaGame
                 floorBlockId++;
             }
 
+            StackId = blocksData[0].Grade;
             gradeText.text = blocksData[0].Grade;
+
+            InitializeCollider(floorHeight);
         }
 
         private List<BlockData> GetBlocksDataReordered(List<BlockData> blocksData)
@@ -61,6 +80,55 @@ namespace JengaGame
                 .ThenBy(blockData => blockData.Cluster)
                 .ThenBy(blockData => blockData.StandardId)
                 .ToList();
+        }
+
+        private void InitializeCollider(float height)
+        {
+            height += blockSize.y / 2;
+            stackCollider.size = new Vector3(blockSize.z, height, blockSize.z);
+            stackCollider.center = new Vector3(0, height / 2, 0);
+
+            var outlineCubeT = outlineCube.transform;
+            outlineCubeT.localScale = new Vector3(blockSize.z, height, blockSize.z);
+            outlineCubeT.localPosition = new Vector3(0, height / 2, 0);
+            outlineCubeT.gameObject.SetActive(false);
+        }
+
+        private void InitializeListeners()
+        {
+            GameManager.Instance.OnStackSelected += OnStackSelected;
+            GameManager.Instance.OnStackHovered += OnStackHovered;
+        }
+
+        private void OnStackSelected(Stack stack)
+        {
+            _isSelected = stack.StackId == StackId;
+            stackCollider.enabled = !_isSelected;
+            if (_isSelected)
+            {
+                outlineCube.OutlineColor = selectedColor;
+                outlineCube.gameObject.SetActive(true);
+            }
+            else
+            {
+                outlineCube.OutlineColor = hoveredColor;
+            }
+        }
+
+        private void OnStackHovered(Stack stack)
+        {
+            if (_isSelected) return;
+
+            var outlineCubeT = outlineCube.transform;
+            if (stack == null) outlineCubeT.gameObject.SetActive(false);
+            else
+                outlineCubeT.gameObject.SetActive(stack.StackId == StackId);
+        }
+
+        private void OnDestroy()
+        {
+            GameManager.Instance.OnStackSelected -= OnStackSelected;
+            GameManager.Instance.OnStackHovered -= OnStackHovered;
         }
     }
 }
