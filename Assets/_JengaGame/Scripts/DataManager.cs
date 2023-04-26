@@ -10,14 +10,14 @@ namespace JengaGame
     {
         private readonly string DataURL = "https://ga1vqcu3o1.execute-api.us-east-1.amazonaws.com/Assessment/stack";
 
-        public List<StackData> StacksData { get; private set; }
+        public Dictionary<string, List<BlockData>> StacksData { get; private set; }
 
-        public void GetStackData(Action<List<StackData>> onStackDataLoaded)
+        public void GetStackData(Action<Dictionary<string, List<BlockData>>> onStackDataLoaded)
         {
             StartCoroutine(GetStackDataCo(onStackDataLoaded));
         }
 
-        private IEnumerator GetStackDataCo(Action<List<StackData>> onStackDataLoaded)
+        private IEnumerator GetStackDataCo(Action<Dictionary<string, List<BlockData>>> onStackDataLoaded)
         {
             var webRequest = UnityEngine.Networking.UnityWebRequest.Get(DataURL);
             yield return webRequest.SendWebRequest();
@@ -38,11 +38,11 @@ namespace JengaGame
 
         private void InitializeStacksData(string json)
         {
-            StacksData = new List<StackData>();
+            StacksData = new Dictionary<string, List<BlockData>>();
             var jsonNode = SimpleJSON.JSON.Parse(json);
             for (var i = 0; i < jsonNode.Count; i++)
             {
-                var stackData = new StackData(
+                var stackData = new BlockData(
                     jsonNode[i]["id"],
                     jsonNode[i]["subject"],
                     jsonNode[i]["grade"],
@@ -52,7 +52,12 @@ namespace JengaGame
                     jsonNode[i]["cluster"],
                     jsonNode[i]["standardid"],
                     jsonNode[i]["standarddescription"]);
-                StacksData.Add(stackData);
+                
+                if (!StacksData.ContainsKey(stackData.Grade))
+                {
+                    StacksData.Add(stackData.Grade, new List<BlockData>());
+                }
+                StacksData[stackData.Grade].Add(stackData);
             }
         }
     }

@@ -7,7 +7,9 @@ namespace JengaGame
 {
     public class GameManager : Singleton<GameManager>
     {
-        [ShowInInspector, ReadOnly] private List<StackData> _stacksData;
+        [ShowInInspector, ReadOnly] private Dictionary<string, List<BlockData>> _blocksData;
+
+        [SerializeField] private List<Stack> stacks;
 
         protected override void Awake()
         {
@@ -15,9 +17,22 @@ namespace JengaGame
             DataManager.Instance.GetStackData(OnStackDataLoaded);
         }
 
-        private void OnStackDataLoaded(List<StackData> stacksData)
+        private void OnStackDataLoaded(Dictionary<string, List<BlockData>> blocksData)
         {
-            _stacksData = stacksData;
+            _blocksData = blocksData;
+            BuildStacks();
+        }
+
+        private void BuildStacks()
+        {
+            var stackId = 0;
+            foreach (var blockDataKey in _blocksData.Keys)
+            {
+                if (stackId >= stacks.Count) break;
+
+                stacks[stackId].BuildStack(_blocksData[blockDataKey]);
+                stackId++;
+            }
         }
     }
 }
