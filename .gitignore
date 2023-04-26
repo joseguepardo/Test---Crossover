@@ -9,6 +9,7 @@
 # [Aa]ssets/AssetStoreTools*
 [Aa]ssets/Plugins/Borodar*
 [Aa]ssets/Plugins/Infinity Code*
+[Aa]ssets/ConsolePro*
 
 # Visual Studio cache directory
 .vs/
@@ -48,3 +49,4 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+
