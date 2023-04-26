@@ -7,6 +7,8 @@
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # [Aa]ssets/AssetStoreTools*
+[Aa]ssets/Plugins/Borodar*
+[Aa]ssets/Plugins/Infinity Code*
 
 # Visual Studio cache directory
 .vs/
