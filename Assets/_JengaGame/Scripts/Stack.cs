@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Chronos;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 
 namespace JengaGame
 {
-    public class Stack : MonoBehaviour, IClickableStack
+    public class Stack : MonoBehaviour, IStack
     {
         public Transform Transform => transform;
         public string StackId { get; private set; }
@@ -32,13 +33,15 @@ namespace JengaGame
         private Color hoveredColor;
 
         private bool _isSelected;
+        public GlobalClock Clock { get; private set; }
 
-        public void InitializeStack(List<BlockData> blocksData)
+        public void InitializeStack(List<BlockData> blocksData, GlobalClock parentClock)
         {
-            BuildStack(blocksData);
+            Clock = parentClock;
+            BuildStack(blocksData, parentClock);
         }
 
-        private void BuildStack(List<BlockData> blocksData)
+        private void BuildStack(List<BlockData> blocksData, GlobalClock parentClock)
         {
             if (blocksData == null || blocksData.Count == 0) return;
 
@@ -74,7 +77,7 @@ namespace JengaGame
                 blockT.localEulerAngles = positionForward ? Vector3.zero : new Vector3(0, 90, 0);
 
                 var block = blockT.GetComponent<Block>();
-                block.Initialize(StackId, i, reorderedBlocksData[i]);
+                block.Initialize(StackId, i, reorderedBlocksData[i], parentClock, position);
                 _blocks.Add(block);
                 floorBlockId++;
             }
@@ -130,6 +133,23 @@ namespace JengaGame
             if (_isSelected) return;
 
             outlineCube.gameObject.SetActive(isHovered);
+        }
+
+        public void PrepareForTest()
+        {
+            foreach (var block in _blocks.Where(block => block.BlockTypeValue == Block.BlockType.Glass))
+            {
+                block.gameObject.SetActive(false);
+            }
+        }
+
+        public void Reset()
+        {
+            foreach (var block in _blocks)
+            {
+                block.gameObject.SetActive(true);
+                block.Reset();
+            }
         }
     }
 }

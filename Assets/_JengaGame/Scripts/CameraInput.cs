@@ -15,14 +15,18 @@ namespace JengaGame
         private float clickThreshold = 0.2f;
         private float _mouseDownTime;
 
-        private IClickableStack _lastHoveredStack;
-        private IClickableStack _lastSelectedStack;
-        private IClickableBlock _lastHoveredBlock;
-        private IClickableBlock _lastSelectedBlock;
+        private IStack _lastHoveredStack;
+        private IStack _lastSelectedStack;
+        private IBlock _lastHoveredBlock;
+        private IBlock _lastSelectedBlock;
+
+        private bool _enableInput = true;
 
         private void Start()
         {
             _gameManager = GameManager.Instance;
+            GameManager.Instance.OnStackTestStarted += () => { _enableInput = false; };
+            GameManager.Instance.OnStackTestFinished += () => { _enableInput = true; };
         }
 
         private void Update()
@@ -42,7 +46,7 @@ namespace JengaGame
         {
             if (Physics.Raycast(ray, out var hit, 1000, stackLayerMask))
             {
-                if (hit.collider.TryGetComponent<IClickableStack>(out var stack))
+                if (hit.collider.TryGetComponent<IStack>(out var stack))
                 {
                     if (stack == _lastHoveredStack) return;
 
@@ -65,7 +69,7 @@ namespace JengaGame
         {
             if (Physics.Raycast(ray, out var hit, 1000, blockLayerMask))
             {
-                if (hit.collider.TryGetComponent<IClickableBlock>(out var block))
+                if (hit.collider.TryGetComponent<IBlock>(out var block))
                 {
                     if (block == _lastHoveredBlock) return;
 
@@ -86,6 +90,8 @@ namespace JengaGame
 
         private void EvaluateSingleClick()
         {
+            if (!_enableInput) return;
+
             if (Input.GetMouseButtonDown(0))
             {
                 _mouseDownTime = Time.time;

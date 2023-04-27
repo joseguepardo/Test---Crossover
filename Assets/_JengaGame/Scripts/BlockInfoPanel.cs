@@ -19,7 +19,7 @@ namespace JengaGame
         [SerializeField] private TMP_Text gradeText;
         [SerializeField] private RectTransform bubbleParent;
 
-        public void Initialize(IClickableBlock block)
+        public void Initialize(IBlock block)
         {
             DestroyBubbles();
 

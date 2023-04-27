@@ -23,7 +23,7 @@ namespace JengaGame
             GameManager.Instance.OnBlockSelected += OnBlockSelected;
         }
 
-        private void OnBlockHovered(IClickableBlock block)
+        private void OnBlockHovered(IBlock block)
         {
             if (block == null)
             {
@@ -36,7 +36,7 @@ namespace JengaGame
             }
         }
 
-        private void OnBlockSelected(IClickableBlock block)
+        private void OnBlockSelected(IBlock block)
         {
             if (block == null)
             {
