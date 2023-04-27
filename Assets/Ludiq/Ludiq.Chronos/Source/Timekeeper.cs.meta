@@ -18,12 +18,11 @@ labels:
 - Rewind
 - Time
 - Chronos
-timeCreated: 1487609716
-licenseType: Store
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
   defaultReferences: []
-  executionOrder: 0
+  executionOrder: 100
   icon: {fileID: 2800000, guid: 6e579a5a9d5ea61409470fd21268f8ba, type: 3}
   userData: 
   assetBundleName: 
