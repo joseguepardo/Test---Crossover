@@ -12,6 +12,8 @@ namespace JengaGame
         public string StackId { get; private set; }
         public int BlockId { get; private set; }
         [ShowInInspector, ReadOnly] public BlockData BlockData { get; private set; }
+        [SerializeField] private MeshRenderer meshRenderer;
+        [SerializeField] private Material[] blockMaterials;
 
         [SerializeField] private Collider blockCollider;
         [SerializeField, BoxGroup("Outline")] private Outline outline;
@@ -35,6 +37,8 @@ namespace JengaGame
             BlockData = blockData;
             BlockTypeValue = (BlockType)blockData.Mastery;
             outline.OutlineColor = hoveredColor;
+
+            meshRenderer.material = blockMaterials[(int)BlockTypeValue];
         }
 
         public void EnableCollider(bool enable)
