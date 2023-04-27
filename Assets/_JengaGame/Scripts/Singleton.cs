@@ -27,6 +27,7 @@ namespace JengaGame
 
             private set => _instance = value;
         }
+        public static bool HasInstance => _instance != null;
 
         protected virtual void Awake()
         {

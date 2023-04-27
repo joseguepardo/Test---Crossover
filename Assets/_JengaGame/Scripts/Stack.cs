@@ -8,9 +8,10 @@ using UnityEngine;
 
 namespace JengaGame
 {
-    public class Stack : MonoBehaviour
+    public class Stack : MonoBehaviour, IClickableStack
     {
-        [ReadOnly] public string StackId;
+        public Transform Transform => transform;
+        public string StackId { get; private set; }
         [SerializeField, BoxGroup("Configuration")]
         private GameObject blockPrefab;
         [SerializeField, BoxGroup("Configuration")]
@@ -21,20 +22,30 @@ namespace JengaGame
         private BoxCollider stackCollider;
         [SerializeField, BoxGroup("References")]
         private TMP_Text gradeText;
+        private List<Block> _blocks;
 
-        [SerializeField, BoxGroup("Outline")] private Outline outlineCube;
-        [SerializeField, BoxGroup("Outline")] private Color selectedColor, hoveredColor;
+        [SerializeField, BoxGroup("Selection")]
+        private GameObject baseGo;
+        [SerializeField, BoxGroup("Selection")]
+        private Outline outlineCube;
+        [SerializeField, BoxGroup("Selection")]
+        private Color hoveredColor;
 
         private bool _isSelected;
 
         public void InitializeStack(List<BlockData> blocksData)
         {
             BuildStack(blocksData);
-            InitializeListeners();
         }
 
         private void BuildStack(List<BlockData> blocksData)
         {
+            if (blocksData == null || blocksData.Count == 0) return;
+
+            StackId = blocksData[0].Grade;
+            gradeText.text = blocksData[0].Grade;
+            _blocks = new List<Block>();
+
             var numberOfStacks = blocksData.Count;
             var reorderedBlocksData = GetBlocksDataReordered(blocksData);
 
@@ -62,13 +73,11 @@ namespace JengaGame
                 blockT.localPosition = position;
                 blockT.localEulerAngles = positionForward ? Vector3.zero : new Vector3(0, 90, 0);
 
-                blockT.GetComponent<Block>().Initialize(reorderedBlocksData[i]);
-
+                var block = blockT.GetComponent<Block>();
+                block.Initialize(StackId, i, reorderedBlocksData[i]);
+                _blocks.Add(block);
                 floorBlockId++;
             }
-
-            StackId = blocksData[0].Grade;
-            gradeText.text = blocksData[0].Grade;
 
             InitializeCollider(floorHeight);
         }
@@ -94,41 +103,33 @@ namespace JengaGame
             outlineCubeT.gameObject.SetActive(false);
         }
 
-        private void InitializeListeners()
+        public void OnClick(bool isClicked)
         {
-            GameManager.Instance.OnStackSelected += OnStackSelected;
-            GameManager.Instance.OnStackHovered += OnStackHovered;
-        }
+            if (_isSelected == isClicked) return;
 
-        private void OnStackSelected(Stack stack)
-        {
-            _isSelected = stack.StackId == StackId;
+            _isSelected = isClicked;
+
             stackCollider.enabled = !_isSelected;
+            outlineCube.gameObject.SetActive(false);
+            baseGo.SetActive(_isSelected);
+
             if (_isSelected)
             {
-                outlineCube.OutlineColor = selectedColor;
-                outlineCube.gameObject.SetActive(true);
+                GameManager.Instance.SelectStack(this);
             }
-            else
+
+            foreach (var block in _blocks)
             {
-                outlineCube.OutlineColor = hoveredColor;
+                block.EnableCollider(isClicked);
+                block.OnHover(false);
             }
         }
 
-        private void OnStackHovered(Stack stack)
+        public void OnHover(bool isHovered)
         {
             if (_isSelected) return;
 
-            var outlineCubeT = outlineCube.transform;
-            if (stack == null) outlineCubeT.gameObject.SetActive(false);
-            else
-                outlineCubeT.gameObject.SetActive(stack.StackId == StackId);
-        }
-
-        private void OnDestroy()
-        {
-            GameManager.Instance.OnStackSelected -= OnStackSelected;
-            GameManager.Instance.OnStackHovered -= OnStackHovered;
+            outlineCube.gameObject.SetActive(isHovered);
         }
     }
 }

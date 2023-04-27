@@ -34,8 +34,8 @@ namespace JengaGame
             _cameraFollowT.rotation = _cameraT.rotation;
 
             var angles = _cameraT.eulerAngles;
-            _x = angles.y;
-            _y = angles.x;
+            _x = 0;
+            _y = 20;
         }
 
         private void InitializeListeners()
@@ -43,9 +43,9 @@ namespace JengaGame
             GameManager.Instance.OnStackSelected += OnStackSelected;
         }
 
-        private void OnStackSelected(Stack stack)
+        private void OnStackSelected(IClickableStack stack)
         {
-            target = stack.transform;
+            target = stack.Transform;
         }
 
         private void Update()
@@ -87,6 +87,7 @@ namespace JengaGame
 
         private void OnDestroy()
         {
+            if (!GameManager.HasInstance) return;
             GameManager.Instance.OnStackSelected -= OnStackSelected;
         }
     }
