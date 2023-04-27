@@ -43,7 +43,7 @@ namespace JengaGame
             GameManager.Instance.OnStackSelected += OnStackSelected;
         }
 
-        private void OnStackSelected(IClickableStack stack)
+        private void OnStackSelected(IStack stack)
         {
             target = stack.Transform;
         }

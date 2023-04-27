@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace JengaGame
 {
@@ -9,21 +10,34 @@ namespace JengaGame
     {
         [SerializeField] private BlockInfoPopup blockInfoPopup;
         [SerializeField] private BlockInfoPanel blockInfoPanel;
+        [SerializeField] private Button testButton, resetButton;
 
         private void Start()
         {
+            InitializeVariables();
+            InitializeListeners();
+        }
+
+        private void InitializeVariables()
+        {
             blockInfoPopup.gameObject.SetActive(false);
             blockInfoPanel.gameObject.SetActive(false);
-            InitializeListeners();
+            testButton.interactable = false;
+            resetButton.gameObject.SetActive(false);
         }
 
         private void InitializeListeners()
         {
             GameManager.Instance.OnBlockHovered += OnBlockHovered;
             GameManager.Instance.OnBlockSelected += OnBlockSelected;
+
+            GameManager.Instance.OnStackSelected += (stack) => { testButton.interactable = true; };
+            GameManager.Instance.OnStackTestFinished += () => { testButton.interactable = true; };
+            testButton.onClick.AddListener(OnTestButton);
+            resetButton.onClick.AddListener(OnResetButton);
         }
 
-        private void OnBlockHovered(IClickableBlock block)
+        private void OnBlockHovered(IBlock block)
         {
             if (block == null)
             {
@@ -36,7 +50,7 @@ namespace JengaGame
             }
         }
 
-        private void OnBlockSelected(IClickableBlock block)
+        private void OnBlockSelected(IBlock block)
         {
             if (block == null)
             {
@@ -47,6 +61,21 @@ namespace JengaGame
                 blockInfoPanel.gameObject.SetActive(true);
                 blockInfoPanel.Initialize(block);
             }
+        }
+
+        private void OnTestButton()
+        {
+            GameManager.Instance.TestStack();
+            testButton.gameObject.SetActive(false);
+            resetButton.gameObject.SetActive(true);
+        }
+
+        private void OnResetButton()
+        {
+            GameManager.Instance.ResetStack();
+            resetButton.gameObject.SetActive(false);
+            testButton.gameObject.SetActive(true);
+            testButton.interactable = false;
         }
 
         private void OnDestroy()
