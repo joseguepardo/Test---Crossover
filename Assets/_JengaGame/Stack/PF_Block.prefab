@@ -61,6 +61,32 @@ MonoBehaviour:
   outline: {fileID: 8025172239720501177}
   selectedColor: {r: 0.524214, g: 1, b: 0, a: 0.6}
   hoveredColor: {r: 1, g: 0.7075371, b: 0, a: 1}
+  startingAnimationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 33.92506
+      outSlope: 33.92506
+      tangentMode: 0
+      weightedMode: 3
+      inWeight: 0
+      outWeight: 0.029308615
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 3
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  startingAnimationDuration: 0.3
+  startingAnimationDelay: 0.025
 --- !u!33 &7145239555625740779
 MeshFilter:
   m_ObjectHideFlags: 0

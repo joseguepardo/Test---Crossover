@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using Chronos;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -29,7 +31,14 @@ namespace JengaGame
         [SerializeField, BoxGroup("Outline")] private Color selectedColor, hoveredColor;
 
         [ShowInInspector, ReadOnly] private bool _isSelected;
-        private Vector3 _startingPosition;
+        [ShowInInspector, ReadOnly] private Vector3 _startingPosition;
+
+        [SerializeField, BoxGroup("Starting animation")]
+        private AnimationCurve startingAnimationCurve;
+        [SerializeField, BoxGroup("Starting animation")]
+        private float startingAnimationDuration;
+        [SerializeField, BoxGroup("Starting animation")]
+        private float startingAnimationDelay;
 
         public enum BlockType
         {
@@ -40,7 +49,8 @@ namespace JengaGame
 
         [ReadOnly] public BlockType BlockTypeValue { get; private set; }
 
-        public void Initialize(string stackId, int blockId, BlockData blockData, GlobalClock parentClock, Vector3 startingPosition)
+        public void Initialize(string stackId, int blockId, BlockData blockData, GlobalClock parentClock,
+            Vector3 startingPosition)
         {
             StackId = stackId;
             BlockId = blockId;
@@ -52,6 +62,19 @@ namespace JengaGame
             blockRigidbody.mass = BlockTypeValue == BlockType.Stone ? 5 : 1;
             timeline.globalClockKey = parentClock.key;
             _startingPosition = startingPosition;
+
+            StartCoroutine(PlayStartingAnimationCo());
+        }
+
+        private IEnumerator PlayStartingAnimationCo()
+        {
+            var cachedT = transform;
+            cachedT.localScale = Vector3.zero;
+            yield return null;
+            cachedT.localPosition = new Vector3(_startingPosition.x, _startingPosition.y + 10, _startingPosition.z);
+            transform.DOLocalMove(_startingPosition, startingAnimationDuration).SetEase(startingAnimationCurve)
+                .SetDelay(1 + startingAnimationDelay * BlockId)
+                .OnStart(() => { transform.localScale = Vector3.one; });
         }
 
         public void EnableCollider(bool enable)
